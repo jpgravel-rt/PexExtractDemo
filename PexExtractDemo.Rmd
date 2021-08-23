@@ -169,6 +169,9 @@ client = pexlib$Client(
 
 client$open()
 
+# PI APIs work with ISO-8601 time shift. No ambiguity here but don't forget to account for daylight
+# saving time when required (2nd Sunday of March / first Sunday of November). Are you querying data
+# before 2007? Have fun!
 tags <- c("//JONQPI01/410F142.PV", "//JONQPI01/BHB-WC-054.PV", "//JONQPI01/BO-DI-804.PV")
 df2 <- lapply(tags, function(tag) {
   pexlib$extractor$extract_dataframe(client, tag,
@@ -181,6 +184,8 @@ df2 <- lapply(tags, function(tag) {
 
 client$close()
 
+# Setting time zone is important at the output. The default may not be what you expect. Especially
+# when working on a server. Are you sure the server you deploy to has the time zone you expect?
 attr(df2$ts, "tzone") <- "America/Toronto"  
 
 df2 %>% 
