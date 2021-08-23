@@ -1,2 +1,4 @@
 source("renv/activate.R")
-reticulate::use_virtualenv("/home/shared/pexenv", required = T)
+pyenv_path <- paste0(getwd(), "/pyenv")
+reticulate::use_virtualenv(pyenv_path, required = T)
+rm(pyenv_path)

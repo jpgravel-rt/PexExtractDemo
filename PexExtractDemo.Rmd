@@ -5,13 +5,13 @@ output: html_notebook
 
 ## What is pexlib and why should I use it?
 
-Pexlib is a python library that interfaces [Osisoft PI Web API](https://docs.osisoft.com/bundle/pi-web-api-reference/page/help.html). It really simplifies
+Pexlib is a python library that interfaces [Osisoft PI Web API](https://docs.osisoft.com/bundle/pi-web-api-reference/page/help.html). It simplifies
 querying PI tags over long period of time. Keep in mind though that pexlib is meant to be a massive
 extractor. Another initiative based on pexlib is ongoing in Brisbane AU to make it a stream
 extractor but we won't address that subject in this document.
 
 Unless you are at ease with Osisoft PI Web APIs, doing raw HTTP requests in R and transforming JSON
-structures into R dataframes then pexlib is for you. Two easy to use methods are at your disposal:
+structures into R dataframes then pexlib is for you. Two easy-to-use methods are at your disposal:
 
 1) extractdf
 2) extract_dataframe
@@ -41,9 +41,10 @@ First create a project with a significative name (File -\> New Project...). When
 Then in a terminal window (terminal not the R Console) type the following commands:
 
 ```{bash}
-python3 -m pip venv pyenv
+python3 -m venv pyenv
 source pyenv/bin/activate
-python -m pip install pexlib pandas kerberos
+python -m pip install wheel setuptools
+python -m pip install pexlib[pandas,kerberos]
 python -m pip freeze > requirements.txt
 ```
 
@@ -52,7 +53,9 @@ following content into it:
 
 ```{r Rprofile Code}
 source("renv/activate.R")
-reticulate::use_virtualenv("pyenv", required = T)
+pyenv_path <- paste0(getwd(), "/pyenv")
+reticulate::use_virtualenv(pyenv_path, required = T)
+rm(pyenv_path)
 ```
 
 Install `reticulate`:
@@ -67,7 +70,6 @@ Now lets create a new R Notebook and add some code
 
 ```{r R Notebook Header}
 library(reticulate)
-
 reticulate::py_config()
 ```
 
@@ -111,7 +113,7 @@ vectorization functions available in R. Be wise and use vectorization instead of
 
 ## One Shot Extraction using extractdf
 
-`extractdf` have an exhaustive list of parameters:
+`extractdf` has an exhaustive list of parameters:
 
 ```
 def extractdf(
@@ -186,20 +188,21 @@ df2 %>%
   summarise(from=min(ts), to=max(ts), count=n(), avg=mean(numval), stddev=sd(numval))
 ```
 
-## Date and Time Disambiguation ##
+## Date and Time Disambiguation
 
 Dealing with datetime can become confusing quickly. To disambiguate the situation, always provide
 the ISO-8601 time shift when passing datetime parameters to `pexlib`, then specify the time zone you
 want to interpret the `ts` column in the returned dataframe. To know which time zones exist, call
 `OlsonNames()` in your R console.
 
-## Conclusion ##
+## Conclusion
 
 This is basically all you need to know about `pexlib` extraction in R. You can now create your own
 projects from the current examples. Be aware though that extracting a lot of data can be a big
 burden on production servers and networks. If you need a huge extraction or if your code makes a
 lot of small extractions repeatedly, it might be a good idea to consult a friendly data engineer
-near you to reduce the burden on our poor production systems.
+near you to reduce the burden on our poor production systems. Especially if you consult the same
+time range for the same tags.
 
 Always remember that PI is an historian, not a hot database usable for extensive data analysis.
 
