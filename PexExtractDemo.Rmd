@@ -88,9 +88,10 @@ rm(req)
 ## Obfuscation
 
 Before we go, you need to be aware of one thing: password obfuscation. Obfuscated password can not
-be easily decoded but it is but still feasible; obfuscation is not encryption. Another user in
+be easily decoded but it is still feasible; obfuscation is not encryption. Another user in
 another session OR another server cannot de-obfuscate a password created from another user context.
-Looking at an obfuscated password gives no clue about the password itself.
+Looking at an obfuscated password gives no clue about the password itself other than its 
+approximate length.
 
 This is how to obfuscate a password for pexlib:
 
@@ -209,7 +210,7 @@ lot of small extractions repeatedly, it might be a good idea to consult a friend
 near you to reduce the burden on our poor production systems. Especially if you consult the same
 time range for the same tags.
 
-Always remember that PI is an historian, not a hot database usable for extensive data analysis.
+Always remember that PI is an historian, not geared toward extensive data analysis.
 
 Thanks :)
 
