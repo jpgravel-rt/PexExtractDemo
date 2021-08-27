@@ -1,17 +1,20 @@
 ---
 title: "Pexlib Extraction Demo"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 ## What is pexlib and why should I use it?
 
 Pexlib is a python library that interfaces [Osisoft PI Web API](https://docs.osisoft.com/bundle/pi-web-api-reference/page/help.html). It simplifies
 querying PI tags over long period of time. Keep in mind though that pexlib is meant to be a massive
-extractor. Another initiative based on pexlib is ongoing in Brisbane AU to make it a stream
+extractor. Another initiative based on pexlib is ongoing in Brisbane AU (PACE) to make it a stream
 extractor but we won't address that subject in this document.
 
 Unless you are at ease with Osisoft PI Web APIs, doing raw HTTP requests in R and transforming JSON
-structures into R dataframes then pexlib is for you. Two easy-to-use methods are at your disposal:
+structures into R dataframes is pretty hard. Pexlib fills the gap by exposing two easy-to-use 
+methods are at your disposal:
 
 1) extractdf
 2) extract_dataframe
@@ -21,10 +24,10 @@ one shot extraction of one tag. The other expect to receive a connection paramet
 multi-tag extractions.
 
 This document assumes that you use RStudio Workbench Pro on a centralized server, not the desktop
-version. But yeah you could still use that one if you know what you are doing.
+version. But yeah you could still use the later if you know what you are doing.
 
 ## Lets install some useful libraries
-```{r Libraries}
+```{r Libraries, eval=FALSE}
 install.packages(c("reticulate", "dplyr"))
 library(dplyr)
 ```
@@ -40,7 +43,7 @@ First create a project with a significative name (File -\> New Project...). When
 
 Then in a terminal window (terminal not the R Console) type the following commands:
 
-```{bash}
+```{bash Command Line, eval=FALSE}
 python3 -m venv pyenv
 source pyenv/bin/activate
 python -m pip install wheel setuptools
@@ -51,7 +54,7 @@ python -m pip freeze > requirements.txt
 You should have a `.Rprofile` file in your project directory. Open it and make sure to copy the
 following content into it:
 
-```{r Rprofile Code}
+```{r Rprofile Code, eval=FALSE}
 source("renv/activate.R")
 pyenv_path <- paste0(getwd(), "/pyenv")
 reticulate::use_virtualenv(pyenv_path, required = T)
@@ -60,7 +63,7 @@ rm(pyenv_path)
 
 Install `reticulate`:
 
-```{r Reticulate Installation}
+```{r Reticulate Installation, eval=FALSE}
 install.packages("reticulate")
 ```
 
@@ -68,7 +71,7 @@ install.packages("reticulate")
 
 Now lets create a new R Notebook and add some code
 
-```{r R Notebook Header}
+```{r R Notebook Header, eval=FALSE}
 library(reticulate)
 reticulate::py_config()
 ```
@@ -76,7 +79,7 @@ reticulate::py_config()
 Reticulate is a library that bridge the gap between R and python. It allows R programmer to use
 python libraries seamlessly. Lets see if you can load `pexlib` into R now.
 
-```{r Loading pexlib}
+```{r Loading pexlib, eval=FALSE}
 pexlib <- import("pexlib")
 
 # Just setting some config values do not worry about these lines...
@@ -95,12 +98,12 @@ approximate length.
 
 This is how to obfuscate a password for pexlib:
 
-```{r Obfuscating a Password}
+```{r Obfuscating a Password, eval=FALSE}
 pexlib$scrambler$obfuscate("password")
 ```
 Another example:
 
-```{r Another Example}
+```{r Another Example, eval=FALSE}
 lapply(rep("Janvier2015", 3), function(password) {
   pexlib$scrambler$obfuscate(password)
 }) %>% unlist()
@@ -116,7 +119,7 @@ vectorization functions available in R. Be wise and use vectorization instead of
 
 `extractdf` has an exhaustive list of parameters:
 
-```
+```{python extractdf interface, eval=FALSE}
 def extractdf(
         server: str,                                # The Pi Web API server address
         username: str,                              # Your username ex: CORP\\john.doe
@@ -126,17 +129,20 @@ def extractdf(
         end_time,                                   # ISO date time string
         sync_time,                                  # ISO date time string
         interval: str = "5s",                       # number foollowed by "s", "m", "h", "d" or "w"
-        output_server: bool = False,                # If true add the server name column 
+        output_server: bool = False,                # If true, add the server name column 
         drop_duplicates: bool = False,              # Some compression
         stream: str = "Interpolated",               # "Interpolated", "Recorded", "Summary"
-        summary_type: str = "Average",              # if stream is "Summary": "Total", "Average", "Minimum", "Maximum", "StdDev", "PopulationStdDev", "Count", "PercentGood"
-        batch_size: int = 150_000,                  # Don't play with this one
+        summary_type: str = "Average",              # Ignored unless stream param is "Summary" 
+                                                    #   Possible values: "Total", "Average", 
+                                                    #   "Minimum", "Maximum", "StdDev", 
+                                                    #   "PopulationStdDev", "Count", "PercentGood"
+        batch_size: int = 150_000,                  # Do not play with this one plz
         ignore_creation_date: bool = False,         # May be handy in some cases (central PI)
-        include_bad_values: bool = True):           # Remove what PI API calls bad values
+        include_bad_values: bool = True):           # Keep or drop bad values (according to PI doc)
 ```
 
 
-```{r}
+```{r extractdf example, eval=FALSE}
 df <- pexlib$extractor$extractdf(
   "https://casagszwebpi1.corp.riotinto.org/piwebapi/",
   "CORP\\crda.courtoisie",
@@ -161,7 +167,7 @@ change the obfuscated password in the next example as well.
 
 ## Multi-tags Extraction Example
 
-```{r Multi-tags}
+```{r Multi-tags Example, eval=FALSE}
 client = pexlib$Client(
   "https://casagszwebpi1.corp.riotinto.org/piwebapi/",
   "CORP\\crda.courtoisie",
@@ -206,11 +212,8 @@ want to interpret the `ts` column in the returned dataframe. To know which time 
 This is basically all you need to know about `pexlib` extraction in R. You can now create your own
 projects from the current examples. Be aware though that extracting a lot of data can be a big
 burden on production servers and networks. If you need a huge extraction or if your code makes a
-lot of small extractions repeatedly, it might be a good idea to consult a friendly data engineer
-near you to reduce the burden on our poor production systems. Especially if you consult the same
-time range for the same tags.
-
-Always remember that PI is an historian, not geared toward extensive data analysis.
+lot of small requests repeatedly, it might be a good idea to consult a friendly data engineer
+near you to reduce the burden on our poor production systems.
 
 Thanks :)
 
