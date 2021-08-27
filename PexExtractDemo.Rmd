@@ -12,12 +12,12 @@ querying PI tags over long period of time. Keep in mind though that pexlib is me
 extractor. Another initiative based on pexlib is ongoing in Brisbane AU (PACE) to make it a stream
 extractor but we won't address that subject in this document.
 
-Unless you are at ease with Osisoft PI Web APIs, doing raw HTTP requests in R and transforming JSON
-structures into R dataframes is pretty hard. Pexlib fills the gap by exposing two easy-to-use 
-methods are at your disposal:
+Unless you are at ease with Osisoft PI Web APIs, you know that doing raw HTTP requests in R and 
+transforming JSON structures into R dataframes is somewhat hard. Pexlib fills the gap by exposing 
+two easy-to-use methods:
 
-1) extractdf
-2) extract_dataframe
+  1) extractdf and;
+  2) extract_dataframe.
 
 Both return a pandas dataframe. One has all arguments required to connect to the server and do a
 one shot extraction of one tag. The other expect to receive a connection parameter to optimize

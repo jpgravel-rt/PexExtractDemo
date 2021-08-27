@@ -243,13 +243,16 @@ rm(req)</code></pre>
         end_time,                                   # ISO date time string
         sync_time,                                  # ISO date time string
         interval: str = &quot;5s&quot;,                       # number foollowed by &quot;s&quot;, &quot;m&quot;, &quot;h&quot;, &quot;d&quot; or &quot;w&quot;
-        output_server: bool = False,                # If true add the server name column 
+        output_server: bool = False,                # If true, add the server name column 
         drop_duplicates: bool = False,              # Some compression
         stream: str = &quot;Interpolated&quot;,               # &quot;Interpolated&quot;, &quot;Recorded&quot;, &quot;Summary&quot;
-        summary_type: str = &quot;Average&quot;,              # if stream is &quot;Summary&quot;: &quot;Total&quot;, &quot;Average&quot;, &quot;Minimum&quot;, &quot;Maximum&quot;, &quot;StdDev&quot;, &quot;PopulationStdDev&quot;, &quot;Count&quot;, &quot;PercentGood&quot;
-        batch_size: int = 150_000,                  # Don&#39;t play with this one
+        summary_type: str = &quot;Average&quot;,              # Ignored unless stream param is &quot;Summary&quot; 
+                                                    #   Possible values: &quot;Total&quot;, &quot;Average&quot;, 
+                                                    #   &quot;Minimum&quot;, &quot;Maximum&quot;, &quot;StdDev&quot;, 
+                                                    #   &quot;PopulationStdDev&quot;, &quot;Count&quot;, &quot;PercentGood&quot;
+        batch_size: int = 150_000,                  # Do not play with this one plz
         ignore_creation_date: bool = False,         # May be handy in some cases (central PI)
-        include_bad_values: bool = True):           # Remove what PI API calls bad values</code></pre>
+        include_bad_values: bool = True):           # Keep or drop bad values (according to PI doc)</code></pre>
 <pre class="r"><code>df &lt;- pexlib$extractor$extractdf(
   &quot;https://casagszwebpi1.corp.riotinto.org/piwebapi/&quot;,
   &quot;CORP\\crda.courtoisie&quot;,
