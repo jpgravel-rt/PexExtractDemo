@@ -46,6 +46,7 @@ Then in a terminal window (terminal not the R Console) type the following comman
 ```{bash Command Line, eval=FALSE}
 python3 -m venv pyenv
 source pyenv/bin/activate
+python -m pip install --upgrade pip
 python -m pip install wheel setuptools
 python -m pip install pexlib[pandas,kerberos]
 python -m pip freeze > requirements.txt
@@ -104,7 +105,7 @@ pexlib$scrambler$obfuscate("password")
 Another example:
 
 ```{r Another Example, eval=FALSE}
-lapply(rep("Janvier2015", 3), function(password) {
+lapply(rep("SomeOtherPassword2021", 3), function(password) {
   pexlib$scrambler$obfuscate(password)
 }) %>% unlist()
 ```
@@ -170,7 +171,7 @@ change the obfuscated password in the next example as well.
 ```{r Multi-tags Example, eval=FALSE}
 client = pexlib$Client(
   "https://casagszwebpi1.corp.riotinto.org/piwebapi/",
-  "CORP\\crda.courtoisie",
+  "DOMAIN\\user.name",
   "#:3EmSY/4wKDfRBurD"                # Change me!
 )
 

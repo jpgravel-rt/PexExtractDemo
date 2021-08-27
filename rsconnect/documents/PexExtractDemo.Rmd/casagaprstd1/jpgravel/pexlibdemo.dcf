@@ -1,0 +1,13 @@
+name: pexlibdemo
+title: PexlibDemo
+username: jpgravel
+account: jpgravel
+server: casagaprstd1
+hostUrl: http://casagaprstd1/__api__
+appId: 489
+bundleId: 2901
+url: http://casagaprstd1/pexlib-demo/
+when: 1630079330.19718
+lastSyncTime: 1630079330.1972
+asMultiple: FALSE
+asStatic: TRUE

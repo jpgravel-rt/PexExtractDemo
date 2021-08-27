@@ -173,10 +173,10 @@ pre code {
 <div id="what-is-pexlib-and-why-should-i-use-it" class="section level2">
 <h2>What is pexlib and why should I use it?</h2>
 <p>Pexlib is a python library that interfaces <a href="https://docs.osisoft.com/bundle/pi-web-api-reference/page/help.html">Osisoft PI Web API</a>. It simplifies querying PI tags over long period of time. Keep in mind though that pexlib is meant to be a massive extractor. Another initiative based on pexlib is ongoing in Brisbane AU (PACE) to make it a stream extractor but we won’t address that subject in this document.</p>
-<p>Unless you are at ease with Osisoft PI Web APIs, doing raw HTTP requests in R and transforming JSON structures into R dataframes is pretty hard. Pexlib fills the gap by exposing two easy-to-use methods are at your disposal:</p>
+<p>Unless you are at ease with Osisoft PI Web APIs, you know that doing raw HTTP requests in R and transforming JSON structures into R dataframes is somewhat hard. Pexlib fills the gap by exposing two easy-to-use methods:</p>
 <ol style="list-style-type: decimal">
-<li>extractdf</li>
-<li>extract_dataframe</li>
+<li>extractdf and;</li>
+<li>extract_dataframe.</li>
 </ol>
 <p>Both return a pandas dataframe. One has all arguments required to connect to the server and do a one shot extraction of one tag. The other expect to receive a connection parameter to optimize multi-tag extractions.</p>
 <p>This document assumes that you use RStudio Workbench Pro on a centralized server, not the desktop version. But yeah you could still use the later if you know what you are doing.</p>
@@ -197,6 +197,7 @@ library(dplyr)</code></pre>
 <p>Then in a terminal window (terminal not the R Console) type the following commands:</p>
 <pre class="bash"><code>python3 -m venv pyenv
 source pyenv/bin/activate
+python -m pip install --upgrade pip
 python -m pip install wheel setuptools
 python -m pip install pexlib[pandas,kerberos]
 python -m pip freeze &gt; requirements.txt</code></pre>
@@ -225,7 +226,7 @@ rm(req)</code></pre>
 <p>This is how to obfuscate a password for pexlib:</p>
 <pre class="r"><code>pexlib$scrambler$obfuscate(&quot;password&quot;)</code></pre>
 <p>Another example:</p>
-<pre class="r"><code>lapply(rep(&quot;Janvier2015&quot;, 3), function(password) {
+<pre class="r"><code>lapply(rep(&quot;SomeOtherPassword2021&quot;, 3), function(password) {
   pexlib$scrambler$obfuscate(password)
 }) %&gt;% unlist()</code></pre>
 <p>Just wanted to show you that obfuscating the same string many times produce different results. This is black magic! At the same time, you have witnessed the use of “lapply”, one of the vectorization functions available in R. Be wise and use vectorization instead of loops.</p>
@@ -273,7 +274,7 @@ head(df)</code></pre>
 <h2>Multi-tags Extraction Example</h2>
 <pre class="r"><code>client = pexlib$Client(
   &quot;https://casagszwebpi1.corp.riotinto.org/piwebapi/&quot;,
-  &quot;CORP\\crda.courtoisie&quot;,
+  &quot;DOMAIN\\user.name&quot;,
   &quot;#:3EmSY/4wKDfRBurD&quot;                # Change me!
 )
 
